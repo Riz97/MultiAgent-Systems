@@ -1,13 +1,43 @@
+;;Reports true if the mouse button is down and so it draws the wall
+;;Procedure that let the user to draw the wall , using xcor and ycor pointed by the mouse
+to draw-wall
+  if mouse-down?
+  [
+  ask patch ( mouse-xcor) ( mouse-ycor)
+  [ set pcolor grey]
+  ]
+end
 
+;;Procedure that let the user to erase the wall , using xcor and ycor pointed by the mouse
+to erase-wall
+  if mouse-down?
+  [
+    ask patch ( mouse-xcor) ( mouse-ycor)
+  [ set pcolor black ]
+  ]
+end
+
+to draw-gate
+
+
+  if mouse-down? and count patches with [pcolor = green] <  1
+  [
+  ask patch  (mouse-xcor) ( mouse-ycor)
+  [ set pcolor green ]
+
+
+
+  ]
+end
 @#$#@#$#@
 GRAPHICS-WINDOW
-210
-10
-647
-448
+466
+27
+1069
+631
 -1
 -1
-13.0
+18.03030303030303
 1
 10
 1
@@ -26,6 +56,74 @@ GRAPHICS-WINDOW
 1
 ticks
 30.0
+
+BUTTON
+10
+31
+256
+64
+Draw the Walls of the Maze
+draw-wall\n\n
+T
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
+
+BUTTON
+11
+79
+259
+112
+Erase the Walls of the Maze
+erase-wall
+T
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
+
+BUTTON
+279
+82
+342
+115
+Clear
+clear-all\nreset-ticks
+NIL
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
+
+BUTTON
+13
+132
+258
+165
+Draw the Exit of the Maze
+draw-gate\n
+T
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
 
 @#$#@#$#@
 ## WHAT IS IT?
