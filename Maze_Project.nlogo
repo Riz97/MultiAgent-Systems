@@ -125,6 +125,23 @@ NIL
 NIL
 1
 
+BUTTON
+278
+134
+379
+167
+Export Maze
+NIL
+NIL
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
+
 @#$#@#$#@
 ## WHAT IS IT?
 
