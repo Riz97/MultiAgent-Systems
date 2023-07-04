@@ -1,10 +1,14 @@
+breed [Intelligent-agents Intelligent-agent]
+breed [Primitive-agents primitive-agent]
+breed [Primal-agents Primal-agent]
+
 ;;Reports true if the mouse button is down and so it draws the wall
 ;;Procedure that let the user to draw the wall , using xcor and ycor pointed by the mouse
 to draw-wall
   if mouse-down?
   [
-  ask patch ( mouse-xcor) ( mouse-ycor)
-  [ set pcolor grey]
+    ask patch ( mouse-xcor) ( mouse-ycor)
+    [ set pcolor grey]
   ]
 end
 
@@ -13,7 +17,7 @@ to erase-wall
   if mouse-down?
   [
     ask patch ( mouse-xcor) ( mouse-ycor)
-  [ set pcolor black ]
+    [ set pcolor black ]
   ]
 end
 
@@ -22,20 +26,124 @@ to draw-gate
 
   if mouse-down? and count patches with [pcolor = green] <  1
   [
-  ask patch  (mouse-xcor) ( mouse-ycor)
-  [ set pcolor green ]
+    ask patch  (mouse-xcor) ( mouse-ycor)
+    [ set pcolor green ]
   ]
 end
 
 ;;Procedure that let you export your maze just created
-
 to export-maze
-
   let filepath(word "../Project/myMaze.csv")
-
     export-world filepath
+end
+
+;;;;;;;;;;;;;;;;;;;;Simulation Setup;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+to setup
+
+  import-world maze
+
+  setup-firstType-agents
+  setup-secondType-agents
+  setup-thirdType-agents
+
+  reset-ticks
+end
+
+;;;;;;;;Set up the agents;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+to setup-firstType-agents
+
+;    if(type-of-agents = "Primitive , Intelligent and Primal")
+;  or (type-of-agents = "Primal and Primitive")
+;  or (type-of-agents = "Primitive")
+;  [
+
+  ;;Create the number of agents set by the user
+  create-Primitive-agents Number-of-agents
+
+  ask Primitive-agents[
+    setxy -15 -15
+    facexy -15 -13
+    set shape "person"
+    set color white
+   ]
+ ;]
+
+end
+
+to setup-secondType-agents
+
+;  if(type-of-agents = "Primitive , Intelligent and Primal") or
+;   (type-of-agents = "Primal and Primitive") or
+;   (type-of-agents = "Primal")
+;  [
+
+  create-Primal-agents Number-of-agents
+
+  ask Primal-agents[
+    setxy -15 -15
+    facexy -15 -13
+    set shape "turtle"
+    set color green
+  ]
+  ;]
+
+end
+
+to setup-thirdType-agents
+
+;  if(type-of-agents = "Primitive , Intelligent and Primal")or
+;   (type-of-agents = "Primitive and Intelligent") or
+; (type-of-agents = "Intelligent")  [
 
 
+  create-Intelligent-agents Number-of-agents
+
+  ask Intelligent-agents[
+    setxy -15 -15
+    facexy -15 -13
+    set shape "car"
+    set color blue
+  ]
+  ;]
+end
+
+
+
+
+;;;;;;;;; Agents Behaviour;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+to Primitive-step
+
+  ask Primitive-agents[
+
+    ifelse(patch-ahead 1 != nobody) and [pcolor] of patch-ahead 1 != grey
+    [
+      jump 1
+    ]
+
+    [
+      left 90
+    ]
+  ]
+
+end
+
+to Primal-step
+
+end
+
+to Intelligent-step
+
+end
+
+
+;;;;;;;;Start the simulation;;;;;;;;;;;;;;;;;;;;;;;;
+to start
+
+  Primitive-step
 
 end
 @#$#@#$#@
@@ -60,8 +168,8 @@ GRAPHICS-WINDOW
 16
 -16
 16
-0
-0
+1
+1
 1
 ticks
 30.0
@@ -151,13 +259,43 @@ NIL
 NIL
 1
 
+CHOOSER
+26
+274
+164
+319
+maze
+maze
+"myMaze.csv" "myMaze2.csv" "myMaze3.csv" "myMaze4.csv" "myMaze5.csv"
+0
+
+TEXTBOX
+13
+10
+244
+28
+Maze generation as you wish:\n
+15
+0.0
+1
+
+TEXTBOX
+1
+241
+457
+259
+-----------------------------------------------------------------------------------------------------------------\n
+11
+0.0
+1
+
 BUTTON
-210
-192
-311
-225
-Import Maze
-NIL
+25
+554
+89
+587
+Setup
+setup
 NIL
 1
 T
@@ -166,6 +304,93 @@ NIL
 NIL
 NIL
 NIL
+1
+
+TEXTBOX
+28
+254
+282
+284
+Select a maze already implmented:
+15
+0.0
+1
+
+TEXTBOX
+28
+528
+178
+547
+Setup the simulation:
+15
+0.0
+1
+
+CHOOSER
+29
+358
+167
+403
+Number-of-agents
+Number-of-agents
+1 5 10 100 500 1000 10000
+0
+
+TEXTBOX
+33
+335
+399
+357
+Select the number of agents in the simulation:
+15
+0.0
+1
+
+CHOOSER
+30
+452
+251
+497
+type-of-agents
+type-of-agents
+"Primitive , Intelligent and Primal" "Primitive and Intelligent" "Primal and Primitive" "Intelligent" "Primitive" "Primal"
+3
+
+TEXTBOX
+37
+428
+364
+446
+Select the type of agents in the simulation: 
+15
+0.0
+1
+
+BUTTON
+28
+640
+91
+673
+Start
+start
+T
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
+
+TEXTBOX
+24
+615
+174
+634
+Start the Simulation
+15
+0.0
 1
 
 @#$#@#$#@
