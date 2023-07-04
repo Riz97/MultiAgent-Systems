@@ -2,6 +2,23 @@ breed [Intelligent-agents Intelligent-agent]
 breed [Primitive-agents primitive-agent]
 breed [Primal-agents Primal-agent]
 
+
+to setup-world
+  clear-all
+  import-world maze
+
+
+
+
+end
+
+to setup-agents
+  setup-firstType-agents
+  ;setup-secondType-agents
+  ;setup-thirdType-agents
+end
+
+
 ;;Reports true if the mouse button is down and so it draws the wall
 ;;Procedure that let the user to draw the wall , using xcor and ycor pointed by the mouse
 to draw-wall
@@ -34,33 +51,24 @@ end
 ;;Procedure that let you export your maze just created
 to export-maze
   let filepath(word "../Project/myMaze.csv")
-    export-world filepath
+    export-world  filepath
 end
 
 ;;;;;;;;;;;;;;;;;;;;Simulation Setup;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-to setup
 
-  import-world maze
-
-  setup-firstType-agents
-  setup-secondType-agents
-  setup-thirdType-agents
-
-  reset-ticks
-end
 
 ;;;;;;;;Set up the agents;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 to setup-firstType-agents
 
-;    if(type-of-agents = "Primitive , Intelligent and Primal")
-;  or (type-of-agents = "Primal and Primitive")
-;  or (type-of-agents = "Primitive")
-;  [
+    if(type-of-agents = "Primitive , Intelligent and Primal")
+  or (type-of-agents = "Primal and Primitive")
+  or (type-of-agents = "Primitive")
+  [
 
   ;;Create the number of agents set by the user
-  create-Primitive-agents Number-of-agents
+  create-Primitive-agents number-of-agents
 
   ask Primitive-agents[
     setxy -15 -15
@@ -68,18 +76,18 @@ to setup-firstType-agents
     set shape "person"
     set color white
    ]
- ;]
+ ]
 
 end
 
 to setup-secondType-agents
 
-;  if(type-of-agents = "Primitive , Intelligent and Primal") or
-;   (type-of-agents = "Primal and Primitive") or
-;   (type-of-agents = "Primal")
-;  [
+  if(type-of-agents = "Primitive , Intelligent and Primal") or
+   (type-of-agents = "Primal and Primitive") or
+   (type-of-agents = "Primal")
+  [
 
-  create-Primal-agents Number-of-agents
+  create-Primal-agents number-of-agents
 
   ask Primal-agents[
     setxy -15 -15
@@ -87,18 +95,18 @@ to setup-secondType-agents
     set shape "turtle"
     set color green
   ]
-  ;]
+  ]
 
 end
 
 to setup-thirdType-agents
 
-;  if(type-of-agents = "Primitive , Intelligent and Primal")or
-;   (type-of-agents = "Primitive and Intelligent") or
-; (type-of-agents = "Intelligent")  [
+  if(type-of-agents = "Primitive , Intelligent and Primal")or
+   (type-of-agents = "Primitive and Intelligent") or
+ (type-of-agents = "Intelligent")  [
 
 
-  create-Intelligent-agents Number-of-agents
+  create-Intelligent-agents number-of-agents
 
   ask Intelligent-agents[
     setxy -15 -15
@@ -106,7 +114,7 @@ to setup-thirdType-agents
     set shape "car"
     set color blue
   ]
-  ;]
+  ]
 end
 
 
@@ -140,9 +148,8 @@ to Intelligent-step
 end
 
 
-;;;;;;;;Start the simulation;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;Start the simulation;;;;;;;;;;;;;;;;;;;;;;;;
 to start
-
   Primitive-step
 
 end
@@ -168,8 +175,8 @@ GRAPHICS-WINDOW
 16
 -16
 16
-1
-1
+0
+0
 1
 ticks
 30.0
@@ -295,7 +302,7 @@ BUTTON
 89
 587
 Setup
-setup
+setup-world
 NIL
 1
 T
@@ -326,16 +333,6 @@ Setup the simulation:
 0.0
 1
 
-CHOOSER
-29
-358
-167
-403
-Number-of-agents
-Number-of-agents
-1 5 10 100 500 1000 10000
-0
-
 TEXTBOX
 33
 335
@@ -345,16 +342,6 @@ Select the number of agents in the simulation:
 15
 0.0
 1
-
-CHOOSER
-30
-452
-251
-497
-type-of-agents
-type-of-agents
-"Primitive , Intelligent and Primal" "Primitive and Intelligent" "Primal and Primitive" "Intelligent" "Primitive" "Primal"
-3
 
 TEXTBOX
 37
@@ -391,6 +378,44 @@ TEXTBOX
 Start the Simulation
 15
 0.0
+1
+
+INPUTBOX
+29
+362
+184
+422
+number-of-agents
+50.0
+1
+0
+Number
+
+CHOOSER
+28
+460
+166
+505
+type-of-agents
+type-of-agents
+"Primitive"
+0
+
+BUTTON
+227
+573
+332
+606
+NIL
+setup-agents
+NIL
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
 1
 
 @#$#@#$#@
