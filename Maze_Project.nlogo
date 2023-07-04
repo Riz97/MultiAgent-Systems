@@ -24,10 +24,19 @@ to draw-gate
   [
   ask patch  (mouse-xcor) ( mouse-ycor)
   [ set pcolor green ]
-
-
-
   ]
+end
+
+;;Procedure that let you export your maze just created
+
+to export-maze
+
+  let filepath(word "../Project/myMaze.csv")
+
+    export-world filepath
+
+
+
 end
 @#$#@#$#@
 GRAPHICS-WINDOW
@@ -126,11 +135,28 @@ NIL
 1
 
 BUTTON
-278
-134
-379
-167
+55
+190
+156
+223
 Export Maze
+export-maze\n
+NIL
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
+
+BUTTON
+210
+192
+311
+225
+Import Maze
 NIL
 NIL
 1
