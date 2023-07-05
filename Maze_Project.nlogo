@@ -2,22 +2,7 @@ breed [Intelligent-agents Intelligent-agent]
 breed [Primitive-agents primitive-agent]
 breed [Primal-agents Primal-agent]
 
-
-to setup-world
-  clear-all
-  import-world maze
-
-
-
-
-end
-
-to setup-agents
-  setup-firstType-agents
-  ;setup-secondType-agents
-  ;setup-thirdType-agents
-end
-
+globals[Primitive-steps Primal-steps Intelligent-steps Avg-Primitive Avg-Primal Avg-Intelligent]
 
 ;;Reports true if the mouse button is down and so it draws the wall
 ;;Procedure that let the user to draw the wall , using xcor and ycor pointed by the mouse
@@ -56,13 +41,26 @@ end
 
 ;;;;;;;;;;;;;;;;;;;;Simulation Setup;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+to setup-world
+  clear-all
+  import-world maze
+end
 
+
+
+to setup-agents
+
+  clear-turtles
+  setup-firstType-agents
+  setup-secondType-agents
+  setup-thirdType-agents
+end
 
 ;;;;;;;;Set up the agents;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 to setup-firstType-agents
 
-    if(type-of-agents = "Primitive , Intelligent and Primal")
+    if(type-of-agents = "Primitive, Intelligent and Primal")
   or (type-of-agents = "Primal and Primitive")
   or (type-of-agents = "Primitive")
   [
@@ -82,7 +80,9 @@ end
 
 to setup-secondType-agents
 
-  if(type-of-agents = "Primitive , Intelligent and Primal") or
+
+
+  if(type-of-agents = "Primitive, Intelligent and Primal") or
    (type-of-agents = "Primal and Primitive") or
    (type-of-agents = "Primal")
   [
@@ -101,7 +101,7 @@ end
 
 to setup-thirdType-agents
 
-  if(type-of-agents = "Primitive , Intelligent and Primal")or
+  if(type-of-agents = "Primitive, Intelligent and Primal")or
    (type-of-agents = "Primitive and Intelligent") or
  (type-of-agents = "Intelligent")  [
 
@@ -127,31 +127,67 @@ to Primitive-step
 
   ask Primitive-agents[
 
+
     ifelse(patch-ahead 1 != nobody) and [pcolor] of patch-ahead 1 != grey
-    [
+    [;;if the patch in front of him is a wall go ahead of 1 patch
       jump 1
     ]
 
-    [
+    [;;if the patch in front of him is a wall turn left
       left 90
     ]
+
+    set Primitive-steps (Primitive-steps + 1)
   ]
 
 end
 
 to Primal-step
 
+  ask Primal-agents[
+        ifelse(patch-ahead 1 != nobody) and [pcolor] of patch-ahead 1 != grey
+    [;;if the patch in front of him is a wall go ahead of 1 patch
+      jump 1
+    ]
+
+    [
+      ifelse(random 2 = 0)
+      [
+        left 90
+      ]
+      ;;if the patch in front of him is randomly turn left or right
+      [
+        right 90
+      ]
+    ]
+
+    set Primal-steps (Primal-steps + 1)
+  ]
+
 end
 
 to Intelligent-step
 
+  ask Intelligent-agents[
+
+    set Intelligent-steps (Intelligent-steps + 1)
+  ]
+
 end
+
+
+
+;;;;;;;Maze Solution;;;;;;;;
+
+to maze-solved
+end
+
 
 
 ;;;;;;;;;Start the simulation;;;;;;;;;;;;;;;;;;;;;;;;
 to start
   Primitive-step
-
+  Primal-step
 end
 @#$#@#$#@
 GRAPHICS-WINDOW
@@ -267,10 +303,10 @@ NIL
 1
 
 CHOOSER
-26
-274
-164
-319
+31
+276
+169
+321
 maze
 maze
 "myMaze.csv" "myMaze2.csv" "myMaze3.csv" "myMaze4.csv" "myMaze5.csv"
@@ -297,11 +333,11 @@ TEXTBOX
 1
 
 BUTTON
-25
-554
-89
-587
-Setup
+29
+350
+147
+383
+Setup the Maze
 setup-world
 NIL
 1
@@ -324,40 +360,40 @@ Select a maze already implmented:
 1
 
 TEXTBOX
-28
-528
-178
-547
-Setup the simulation:
+32
+329
+182
+348
+Setup the maze: 
 15
 0.0
 1
 
 TEXTBOX
-33
-335
-399
-357
+28
+407
+394
+429
 Select the number of agents in the simulation:
 15
 0.0
 1
 
 TEXTBOX
-37
-428
-364
-446
+29
+504
+356
+522
 Select the type of agents in the simulation: 
 15
 0.0
 1
 
 BUTTON
-28
-640
-91
-673
+212
+622
+275
+655
 Start
 start
 T
@@ -371,41 +407,41 @@ NIL
 1
 
 TEXTBOX
-24
-615
-174
-634
-Start the Simulation
+208
+597
+358
+616
+Start the Simulation:
 15
-0.0
+65.0
 1
 
 INPUTBOX
 29
-362
+434
 184
-422
+494
 number-of-agents
-50.0
+1.0
 1
 0
 Number
 
 CHOOSER
-28
-460
-166
-505
+27
+530
+245
+575
 type-of-agents
 type-of-agents
-"Primitive"
-0
+"Primitive, Intelligent and Primal" "Primitive and Intelligent" "Intelligent" "Primitive" "Primal"
+4
 
 BUTTON
-227
-573
-332
-606
+29
+619
+134
+652
 NIL
 setup-agents
 NIL
@@ -417,6 +453,129 @@ NIL
 NIL
 NIL
 1
+
+TEXTBOX
+0
+390
+459
+408
+------------------------------------------------------------------------------------------------------------------\n
+11
+0.0
+1
+
+TEXTBOX
+31
+597
+181
+616
+Setup the agents:
+15
+0.0
+1
+
+BUTTON
+278
+307
+376
+340
+NIL
+clear-turtles\n
+NIL
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
+
+MONITOR
+1094
+50
+1251
+103
+Primitive Agents 
+count Primitive-agents
+17
+1
+13
+
+MONITOR
+1272
+51
+1414
+104
+Primal Agents 
+count Primal-agents
+17
+1
+13
+
+MONITOR
+1425
+51
+1590
+104
+Intelligent Agents 
+count Intelligent-agents
+17
+1
+13
+
+TEXTBOX
+1098
+22
+1464
+40
+Keep track of the total number of agent by kind
+15
+0.0
+1
+
+TEXTBOX
+1097
+139
+1440
+160
+Keep track of the average number of steps by kind
+14
+0.0
+1
+
+MONITOR
+1094
+173
+1253
+226
+Primitive Agents
+Avg-Primitive
+17
+1
+13
+
+MONITOR
+1273
+173
+1414
+226
+Primal Agents
+Avg-Primal
+17
+1
+13
+
+MONITOR
+1428
+174
+1595
+227
+Intelligent Agents
+Avg-Intelligent
+17
+1
+13
 
 @#$#@#$#@
 ## WHAT IS IT?
