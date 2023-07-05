@@ -93,7 +93,7 @@ to setup-secondType-agents
     setxy -15 -15
     facexy -15 -13
     set shape "turtle"
-    set color green
+    set color red
   ]
   ]
 
@@ -155,10 +155,23 @@ to Primal-step
       [
         left 90
       ]
-      ;;if the patch in front of him is randomly turn left or right
+
       [
         right 90
       ]
+
+      if([pcolor] of patch-right-and-ahead  90 1 = green)
+      [
+        right 90
+        jump 1
+      ]
+
+      if([pcolor] of patch-left-and-ahead 90 1 = green)
+      [
+       left 90
+       jump 1
+      ]
+
     ]
 
     set Primal-steps (Primal-steps + 1)
@@ -175,11 +188,29 @@ to Intelligent-step
 
 end
 
+to step-solved
+
+  ask Primal-agents[
+
+      if([pcolor] of patch-right-and-ahead  90 1 = green)
+      [
+        right 90
+        jump 1
+      ]
+
+      if([pcolor] of patch-left-and-ahead 90 1 = green)
+      [
+       left 90
+       jump 1
+      ]
+  ]
+end
 
 
 ;;;;;;;Maze Solution;;;;;;;;
 
 to maze-solved
+
 end
 
 
@@ -188,6 +219,8 @@ end
 to start
   Primitive-step
   Primal-step
+  step-solved
+  maze-solved
 end
 @#$#@#$#@
 GRAPHICS-WINDOW
@@ -576,6 +609,24 @@ Avg-Intelligent
 17
 1
 13
+
+PLOT
+1235
+423
+1435
+573
+plot 1
+NIL
+NIL
+0.0
+10.0
+0.0
+10.0
+true
+false
+"" ""
+PENS
+"default" 1.0 0 -16777216 true "" "plot count turtles"
 
 @#$#@#$#@
 ## WHAT IS IT?
