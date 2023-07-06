@@ -1,8 +1,10 @@
 breed [Intelligent-agents Intelligent-agent]
 breed [Primitive-agents primitive-agent]
-breed [Primal-agents Primal-agent]
+breed [Random-agents Random-agent]
 
-globals[Primitive-steps Primal-steps Intelligent-steps Avg-Primitive Avg-Primal Avg-Intelligent]
+globals[Primitive-steps Random-steps Intelligent-steps Avg-Primitive  Avg-Random Avg-Intelligent]
+
+
 
 ;;Reports true if the mouse button is down and so it draws the wall
 ;;Procedure that let the user to draw the wall , using xcor and ycor pointed by the mouse
@@ -14,7 +16,7 @@ to draw-wall
   ]
 end
 
-;;Procedure that let the user to erase the wall , using xcor and ycor pointed by the mouse
+;--------Procedure that let the user to erase the wall , using xcor and ycor pointed by the mouse----------
 to erase-wall
   if mouse-down?
   [
@@ -22,6 +24,8 @@ to erase-wall
     [ set pcolor black ]
   ]
 end
+
+;----------- Procedure that let the user draw the gate--------------
 
 to draw-gate
 
@@ -51,17 +55,35 @@ end
 to setup-agents
 
   clear-turtles
+  clear-globals
+
   setup-firstType-agents
   setup-secondType-agents
   setup-thirdType-agents
 end
 
+
+;--------------Start the simulation-------------
+to start
+
+  Primitive-step
+  Random-step
+  ;;Intelligent-step
+  step-solved
+  maze-solved
+  refresh
+
+end
+
 ;;;;;;;;Set up the agents;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+;--------------Set up of  the Primitive Agent---------------
 
 to setup-firstType-agents
 
-    if(type-of-agents = "Primitive, Intelligent and Primal")
-  or (type-of-agents = "Primal and Primitive")
+    if(type-of-agents = "Primitive, Intelligent and Random")
+  or (type-of-agents = "Random and Primitive")
   or (type-of-agents = "Primitive")
   [
 
@@ -78,30 +100,35 @@ to setup-firstType-agents
 
 end
 
+;--------------Set up of the Random Agent-------------------
+
 to setup-secondType-agents
 
 
 
-  if(type-of-agents = "Primitive, Intelligent and Primal") or
-   (type-of-agents = "Primal and Primitive") or
-   (type-of-agents = "Primal")
+  if(type-of-agents = "Primitive, Intelligent and Random") or
+   (type-of-agents = "Random and Primitive") or
+   (type-of-agents = "Random")
   [
 
-  create-Primal-agents number-of-agents
+  create-Random-agents number-of-agents
 
-  ask Primal-agents[
+  ask Random-agents[
     setxy -15 -15
     facexy -15 -13
     set shape "turtle"
-    set color red
+    set color brown
   ]
   ]
 
 end
 
+
+;---------------Set up of the Intelligent Agent-----------------
+
 to setup-thirdType-agents
 
-  if(type-of-agents = "Primitive, Intelligent and Primal")or
+  if(type-of-agents = "Primitive, Intelligent and Random")or
    (type-of-agents = "Primitive and Intelligent") or
  (type-of-agents = "Intelligent")  [
 
@@ -118,10 +145,38 @@ to setup-thirdType-agents
 end
 
 
+;-------------Maze Solution----------------------
+
+;If the patch where the turtle is located is green ,
+;the turtle die because it completed the maze
+to maze-solved
+
+  ask turtles[
+    ask patch-here [ if (pcolor = green)[
+      ask myself [  die
+         ]
+      ]
+    ]
+  ]
+
+end
+
+;------------Refresh the monitors for the average steps----------------
+
+to refresh
+
+  set Avg-Primitive (Primitive-steps / number-of-agents)
+  set Avg-Random (Random-steps / number-of-agents)
+
+end
+
+
 
 
 ;;;;;;;;; Agents Behaviour;;;;;;;;;;;;;;;;;;;;;;;;;
 
+
+;---------------Primitive Agent Behaviour---------------
 
 to Primitive-step
 
@@ -142,9 +197,12 @@ to Primitive-step
 
 end
 
-to Primal-step
 
-  ask Primal-agents[
+;-----------------Random Agent Behaviour----------------------
+
+to Random-step
+
+  ask Random-agents[
         ifelse(patch-ahead 1 != nobody) and [pcolor] of patch-ahead 1 != grey
     [;;if the patch in front of him is a wall go ahead of 1 patch
       jump 1
@@ -160,24 +218,16 @@ to Primal-step
         right 90
       ]
 
-      if([pcolor] of patch-right-and-ahead  90 1 = green)
-      [
-        right 90
-        jump 1
-      ]
 
-      if([pcolor] of patch-left-and-ahead 90 1 = green)
-      [
-       left 90
-       jump 1
-      ]
 
     ]
 
-    set Primal-steps (Primal-steps + 1)
+    set Random-steps (Random-steps + 1)
   ]
 
 end
+
+;---------------------Intelligent Agent Behaviour------------------
 
 to Intelligent-step
 
@@ -188,9 +238,11 @@ to Intelligent-step
 
 end
 
+;---------Procedure that let the turtles goes through the exit------------
+
 to step-solved
 
-  ask Primal-agents[
+  ask Random-agents[
 
       if([pcolor] of patch-right-and-ahead  90 1 = green)
       [
@@ -207,21 +259,7 @@ to step-solved
 end
 
 
-;;;;;;;Maze Solution;;;;;;;;
 
-to maze-solved
-
-end
-
-
-
-;;;;;;;;;Start the simulation;;;;;;;;;;;;;;;;;;;;;;;;
-to start
-  Primitive-step
-  Primal-step
-  step-solved
-  maze-solved
-end
 @#$#@#$#@
 GRAPHICS-WINDOW
 466
@@ -455,7 +493,7 @@ INPUTBOX
 184
 494
 number-of-agents
-1.0
+10.0
 1
 0
 Number
@@ -463,11 +501,11 @@ Number
 CHOOSER
 27
 530
-245
+266
 575
 type-of-agents
 type-of-agents
-"Primitive, Intelligent and Primal" "Primitive and Intelligent" "Intelligent" "Primitive" "Primal"
+"Primitive, Intelligent and Random" "Random and Primitive" "Primitive and Intelligent" "Intelligent" "Primitive" "Random"
 4
 
 BUTTON
@@ -540,8 +578,8 @@ MONITOR
 51
 1414
 104
-Primal Agents 
-count Primal-agents
+Random Agents 
+count Random-agents
 17
 1
 13
@@ -562,26 +600,26 @@ TEXTBOX
 22
 1464
 40
-Keep track of the total number of agent by kind
+Keep track of the total number of agent by kind : 
 15
 0.0
 1
 
 TEXTBOX
-1097
-139
-1440
-160
-Keep track of the average number of steps by kind
+1095
+116
+1438
+137
+Keep track of the average number of steps by kind :
 14
 0.0
 1
 
 MONITOR
-1094
-173
-1253
-226
+1092
+150
+1251
+203
 Primitive Agents
 Avg-Primitive
 17
@@ -589,21 +627,21 @@ Avg-Primitive
 13
 
 MONITOR
-1273
-173
-1414
-226
-Primal Agents
-Avg-Primal
+1271
+150
+1412
+203
+Random Agents
+Avg-Random
 17
 1
 13
 
 MONITOR
-1428
-174
-1595
-227
+1426
+151
+1593
+204
 Intelligent Agents
 Avg-Intelligent
 17
@@ -611,11 +649,47 @@ Avg-Intelligent
 13
 
 PLOT
-1235
-423
-1435
-573
+1091
+240
+1598
+382
 plot 1
+NIL
+NIL
+0.0
+10.0
+0.0
+10.0
+true
+false
+"" ""
+PENS
+"default" 1.0 0 -16777216 true "" "plot count turtles"
+
+PLOT
+1091
+383
+1598
+524
+plot 2
+NIL
+NIL
+0.0
+10.0
+0.0
+10.0
+true
+false
+"" ""
+PENS
+"default" 1.0 0 -16777216 true "" "plot count turtles"
+
+PLOT
+1091
+525
+1598
+652
+plot 3
 NIL
 NIL
 0.0
