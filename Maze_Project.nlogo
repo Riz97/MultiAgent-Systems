@@ -37,6 +37,20 @@ to draw-gate
   ]
 end
 
+;------------Automatically draw the border of the Maze---------------
+
+to draw-border
+ask patches with [ pycor >= -16  and pycor >= 16]
+  [ set pcolor grey ]
+    ask patches with [ pycor <= -16  and pycor <= 16]
+  [ set pcolor grey]
+    ask patches with [ pxcor >= -16  and pxcor >= 16]
+  [ set pcolor grey ]
+    ask patches with [ pxcor <= -16  and pxcor <= 16]
+  [ set pcolor grey ]
+end
+
+
 ;;Procedure that let you export your maze just created
 to export-maze
   let filepath(word "../Project/myMaze.csv")
@@ -56,10 +70,13 @@ to setup-agents
 
   clear-turtles
   clear-globals
+  clear-all-plots
 
   setup-firstType-agents
   setup-secondType-agents
   setup-thirdType-agents
+
+  reset-ticks
 end
 
 
@@ -69,10 +86,13 @@ to start
   Primitive-step
   Random-step
   ;;Intelligent-step
+
   step-solved
   maze-solved
+
   refresh
 
+  tick
 end
 
 ;;;;;;;;Set up the agents;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -94,7 +114,7 @@ to setup-firstType-agents
     setxy -15 -15
     facexy -15 -13
     set shape "person"
-    set color white
+    set color red
    ]
  ]
 
@@ -256,8 +276,22 @@ to step-solved
        jump 1
       ]
   ]
-end
 
+    ask Primitive-agents[
+
+      if([pcolor] of patch-right-and-ahead  90 1 = green)
+      [
+        right 90
+        jump 1
+      ]
+
+      if([pcolor] of patch-left-and-ahead 90 1 = green)
+      [
+       left 90
+       jump 1
+      ]
+  ]
+end
 
 
 @#$#@#$#@
@@ -289,10 +323,10 @@ ticks
 30.0
 
 BUTTON
-10
-31
-256
-64
+0
+104
+246
+137
 Draw the Walls of the Maze
 draw-wall\n\n
 T
@@ -306,10 +340,10 @@ NIL
 1
 
 BUTTON
-11
-79
-259
-112
+0
+152
+246
+185
 Erase the Walls of the Maze
 erase-wall
 T
@@ -323,10 +357,10 @@ NIL
 1
 
 BUTTON
-279
-82
-342
-115
+324
+135
+387
+168
 Clear
 clear-all\nreset-ticks
 NIL
@@ -340,10 +374,10 @@ NIL
 1
 
 BUTTON
-13
-132
-258
-165
+1
+205
+246
+238
 Draw the Exit of the Maze
 draw-gate\n
 T
@@ -357,10 +391,10 @@ NIL
 1
 
 BUTTON
-55
-190
-156
-223
+2
+252
+103
+285
 Export Maze
 export-maze\n
 NIL
@@ -375,9 +409,9 @@ NIL
 
 CHOOSER
 31
-276
+333
 169
-321
+378
 maze
 maze
 "myMaze.csv" "myMaze2.csv" "myMaze3.csv" "myMaze4.csv" "myMaze5.csv"
@@ -395,9 +429,9 @@ Maze generation as you wish:\n
 
 TEXTBOX
 1
-241
+296
 457
-259
+314
 -----------------------------------------------------------------------------------------------------------------\n
 11
 0.0
@@ -405,9 +439,9 @@ TEXTBOX
 
 BUTTON
 29
-350
+407
 147
-383
+440
 Setup the Maze
 setup-world
 NIL
@@ -422,9 +456,9 @@ NIL
 
 TEXTBOX
 28
-254
+311
 282
-284
+341
 Select a maze already implmented:
 15
 0.0
@@ -432,9 +466,9 @@ Select a maze already implmented:
 
 TEXTBOX
 32
-329
+386
 182
-348
+405
 Setup the maze: 
 15
 0.0
@@ -442,9 +476,9 @@ Setup the maze:
 
 TEXTBOX
 28
-407
+464
 394
-429
+486
 Select the number of agents in the simulation:
 15
 0.0
@@ -452,9 +486,9 @@ Select the number of agents in the simulation:
 
 TEXTBOX
 29
-504
+561
 356
-522
+579
 Select the type of agents in the simulation: 
 15
 0.0
@@ -462,9 +496,9 @@ Select the type of agents in the simulation:
 
 BUTTON
 212
-622
+679
 275
-655
+712
 Start
 start
 T
@@ -479,9 +513,9 @@ NIL
 
 TEXTBOX
 208
-597
+654
 358
-616
+673
 Start the Simulation:
 15
 65.0
@@ -489,9 +523,9 @@ Start the Simulation:
 
 INPUTBOX
 29
-434
+491
 184
-494
+551
 number-of-agents
 10.0
 1
@@ -500,9 +534,9 @@ Number
 
 CHOOSER
 27
-530
+587
 266
-575
+632
 type-of-agents
 type-of-agents
 "Primitive, Intelligent and Random" "Random and Primitive" "Primitive and Intelligent" "Intelligent" "Primitive" "Random"
@@ -510,9 +544,9 @@ type-of-agents
 
 BUTTON
 29
-619
+676
 134
-652
+709
 NIL
 setup-agents
 NIL
@@ -527,9 +561,9 @@ NIL
 
 TEXTBOX
 0
-390
+447
 459
-408
+465
 ------------------------------------------------------------------------------------------------------------------\n
 11
 0.0
@@ -537,20 +571,20 @@ TEXTBOX
 
 TEXTBOX
 31
-597
+654
 181
-616
+673
 Setup the agents:
 15
 0.0
 1
 
 BUTTON
-278
-307
-376
-340
-NIL
+304
+377
+414
+410
+Delete Agents
 clear-turtles\n
 NIL
 1
@@ -653,54 +687,91 @@ PLOT
 240
 1598
 382
-plot 1
-NIL
-NIL
+Primitive Agents Life
+Time
+N. Agents
 0.0
-10.0
+100000.0
 0.0
 10.0
 true
 false
-"" ""
+"\nset-plot-y-range 0 number-of-agents" ""
 PENS
-"default" 1.0 0 -16777216 true "" "plot count turtles"
+"Number" 1.0 0 -2674135 true "" "plot count Primitive-agents"
 
 PLOT
 1091
 383
 1598
 524
-plot 2
-NIL
-NIL
+Random Agents Life
+Time
+N. Agents
 0.0
-10.0
+100000.0
 0.0
 10.0
 true
 false
-"" ""
+"\nset-plot-y-range 0 number-of-agents" ""
 PENS
-"default" 1.0 0 -16777216 true "" "plot count turtles"
+"default" 1.0 0 -6459832 true "" "plot count Random-agents"
 
 PLOT
 1091
 525
 1598
 652
-plot 3
-NIL
-NIL
+Intelligent Agents Life
+Time
+N. Agents
 0.0
-10.0
+100000.0
 0.0
 10.0
 true
 false
-"" ""
+"\nset-plot-y-range 0 number-of-agents" ""
 PENS
-"default" 1.0 0 -16777216 true "" "plot count turtles"
+"default" 1.0 0 -13345367 true "" "plot count Intelligent-agents"
+
+BUTTON
+0
+54
+269
+87
+Draw Automatically the Border of the Maze
+draw-border
+NIL
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
+
+TEXTBOX
+315
+114
+465
+132
+Reset the Maze:
+13
+0.0
+1
+
+TEXTBOX
+306
+356
+456
+374
+Delete the agents:
+13
+0.0
+1
 
 @#$#@#$#@
 ## WHAT IS IT?
