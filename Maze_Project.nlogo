@@ -85,7 +85,7 @@ to start
 
   Primitive-step
   Random-step
-  ;;Intelligent-step
+  Intelligent-step
 
   step-solved
   maze-solved
@@ -187,6 +187,7 @@ to refresh
 
   set Avg-Primitive (Primitive-steps / number-of-agents)
   set Avg-Random (Random-steps / number-of-agents)
+  set Avg-Intelligent(Intelligent-steps / number-of-agents)
 
 end
 
@@ -203,7 +204,7 @@ to Primitive-step
   ask Primitive-agents[
 
 
-    ifelse(patch-ahead 1 != nobody) and [pcolor] of patch-ahead 1 != grey
+    ifelse  [pcolor] of patch-ahead 1 != grey
     [;;if the patch in front of him is a wall go ahead of 1 patch
       jump 1
     ]
@@ -223,7 +224,7 @@ end
 to Random-step
 
   ask Random-agents[
-        ifelse(patch-ahead 1 != nobody) and [pcolor] of patch-ahead 1 != grey
+        ifelse  [pcolor] of patch-ahead 1 != grey
     [;;if the patch in front of him is a wall go ahead of 1 patch
       jump 1
     ]
@@ -247,11 +248,51 @@ to Random-step
 
 end
 
-;---------------------Intelligent Agent Behaviour------------------
+;  -----------------------Intelligent Agent Behaviour-----------------------
+
+;Left Hand Rule ( The turtle prefers left movement before moving forward, if it can't , it prefers to move forwart instead of moving right
+;If none of that cases are not possible , the robot will remain in place and and only turn left
 
 to Intelligent-step
 
+
+
   ask Intelligent-agents[
+
+    ifelse((random 100) + 1 > 99)
+    [
+     left((random 3) + 1) * 90
+    ]
+    [
+    ;Turn Left , if the patch and its left  is not grey grey
+    ifelse  [pcolor] of patch-left-and-ahead 90 1 != grey
+    [
+
+      ;Turn the turtle of 90 degrees and jump 1 patch
+      left 90
+      jump 1
+    ]
+
+    [ ifelse [pcolor] of patch-ahead 1 != grey
+      [
+        jump 1
+      ]
+
+      [ ifelse  [pcolor] of patch-right-and-ahead 90 1 != grey
+
+        [
+          right 90
+          jump 1
+        ]
+
+        [
+          left 90
+        ]
+      ]
+      ]
+      ]
+
+
 
     set Intelligent-steps (Intelligent-steps + 1)
   ]
@@ -292,7 +333,6 @@ to step-solved
       ]
   ]
 end
-
 
 @#$#@#$#@
 GRAPHICS-WINDOW
@@ -540,7 +580,7 @@ CHOOSER
 type-of-agents
 type-of-agents
 "Primitive, Intelligent and Random" "Random and Primitive" "Primitive and Intelligent" "Intelligent" "Primitive" "Random"
-4
+0
 
 BUTTON
 29
