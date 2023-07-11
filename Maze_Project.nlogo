@@ -264,7 +264,7 @@ to Intelligent-step
      left((random 3) + 1) * 90
     ]
     [
-    ;Turn Left , if the patch and its left  is not grey grey
+    ;Turn Left , if the patch and its left  is not  grey
     ifelse  [pcolor] of patch-left-and-ahead 90 1 != grey
     [
 
@@ -273,11 +273,12 @@ to Intelligent-step
       jump 1
     ]
 
+      ; otherwise if the patch in front is not a wall go straight
     [ ifelse [pcolor] of patch-ahead 1 != grey
       [
         jump 1
       ]
-
+        ;otherwise if the patch at its right is not a wall turn right
       [ ifelse  [pcolor] of patch-right-and-ahead 90 1 != grey
 
         [
@@ -285,6 +286,7 @@ to Intelligent-step
           jump 1
         ]
 
+          ;if none of the previous options are true just turn left
         [
           left 90
         ]
@@ -331,9 +333,24 @@ to step-solved
        left 90
        jump 1
       ]
+
+       ask Intelligent-agents[
+
+      if([pcolor] of patch-right-and-ahead  90 1 = green)
+      [
+        right 90
+        jump 1
+      ]
+
+      if([pcolor] of patch-left-and-ahead 90 1 = green)
+      [
+       left 90
+       jump 1
+      ]
+    ]
+
   ]
 end
-
 @#$#@#$#@
 GRAPHICS-WINDOW
 466
@@ -455,7 +472,7 @@ CHOOSER
 maze
 maze
 "myMaze.csv" "myMaze2.csv" "myMaze3.csv" "myMaze4.csv" "myMaze5.csv"
-0
+4
 
 TEXTBOX
 13
@@ -567,7 +584,7 @@ INPUTBOX
 184
 551
 number-of-agents
-10.0
+1.0
 1
 0
 Number
@@ -580,7 +597,7 @@ CHOOSER
 type-of-agents
 type-of-agents
 "Primitive, Intelligent and Random" "Random and Primitive" "Primitive and Intelligent" "Intelligent" "Primitive" "Random"
-0
+5
 
 BUTTON
 29
