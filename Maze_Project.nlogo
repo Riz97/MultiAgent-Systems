@@ -264,7 +264,7 @@ to Intelligent-step
      left((random 3) + 1) * 90
     ]
     [
-    ;Turn Left , if the patch and its left  is not  grey
+    ;Turn Left , if the patch at its left  is not  grey
     ifelse  [pcolor] of patch-left-and-ahead 90 1 != grey
     [
 
@@ -472,7 +472,7 @@ CHOOSER
 maze
 maze
 "myMaze.csv" "myMaze2.csv" "myMaze3.csv" "myMaze4.csv" "myMaze5.csv"
-4
+0
 
 TEXTBOX
 13
@@ -584,7 +584,7 @@ INPUTBOX
 184
 551
 number-of-agents
-1.0
+10.0
 1
 0
 Number
@@ -597,7 +597,7 @@ CHOOSER
 type-of-agents
 type-of-agents
 "Primitive, Intelligent and Random" "Random and Primitive" "Primitive and Intelligent" "Intelligent" "Primitive" "Random"
-5
+3
 
 BUTTON
 29
